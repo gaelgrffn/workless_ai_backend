@@ -3,10 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 import openai
 import os
 
+# Récupère la clé OpenAI depuis les variables d'environnement Render
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 
+# Autoriser toutes les origines pour le CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,12 +17,11 @@ app.add_middleware(
 )
 
 @app.post("/email")
-async def email(prompt: str):
+async def email(prompt: str = Form(...)):
     response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}]
     )
-    # Récupère le texte généré
     answer = response.choices[0].message.content
     return {"answer": answer}
 
