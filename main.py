@@ -15,25 +15,29 @@ app.add_middleware(
 )
 
 @app.post("/email")
-async def email(prompt: str = Form(...)):
-    response = openai.ChatCompletion.create(
+async def email(prompt: str):
+    response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}]
     )
-    return {"email": response.choices[0].message.content}
+    # Récupère le texte généré
+    answer = response.choices[0].message.content
+    return {"answer": answer}
 
 @app.post("/resume")
 async def resume(prompt: str = Form(...)):
-    response = openai.ChatCompletion.create(
+    response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "Résume ce texte : " + prompt}]
     )
-    return {"resume": response.choices[0].message.content}
+    answer = response.choices[0].message.content
+    return {"resume": answer}
 
 @app.post("/tasks")
 async def tasks(prompt: str = Form(...)):
-    response = openai.ChatCompletion.create(
+    response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "Organise ces tâches : " + prompt}]
     )
-    return {"tasks": response.choices[0].message.content}
+    answer = response.choices[0].message.content
+    return {"tasks": answer}
